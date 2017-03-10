@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Repository and Service layers -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:properties/data-access.properties</value>
+				<value>classpath:properties/redis.properties</value>
+				<value>classpath:properties/shiro.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+	<context:annotation-config />
+
+	<context:component-scan base-package="me.supercube.**.service"/>
+	<context:component-scan base-package="me.supercube.**.common"/>
+	<context:component-scan base-package="me.supercube.common.model"/>
+	<context:component-scan base-package="me.supercube.common.util"/>
+
+	<bean class="me.supercube.portal.common.InitializeApplicationProcessor" id="initializeApplicationProcessor" />
+
+ 	<!-- 开启AOP监听 只对当前配置文件有效 -->
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+
+	<!-- import the dataSource definition -->
+	<import resource="datasource-config.xml" />
+
+	<!-- enables scanning for @Transactional annotations -->
+	<tx:annotation-driven />
+
+	<bean id="dataSourceProxy"
+		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+		<property name="targetDataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+			</bean>
+		</property>
+		<property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">${jdbc.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">none</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+
+				<!--<prop key="jadira.userType.autoRegisterUserTypes">true</prop>-->
+			  	<!--&lt;!&ndash; defaults to storing UTC dates in DB otherwise &ndash;&gt;-->
+			  	<!--<prop key="jadira.userType.databaseZone">UTC</prop>-->
+			  	<!--<prop key="jadira.userType.javaZone">UTC</prop>-->
+			</props>
+		</property>
+		<property name="jpaPropertyMap">
+            <map>
+                <!-- 使用自定义的validator进行jsr303验证 -->
+                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
+                <!-- jsr303验证模式 因为其要么验证 要么不验证 不能按照规则走 所以此处禁用 -->
+                <!-- #http://docs.jboss.org/hibernate/entitymanager/3.6/reference/en/html/configuration.html -->
+                <entry key="javax.persistence.validation.mode" value="NONE"/>
+
+                <!-- 只扫描class文件，不扫描hbm，默认两个都搜索 -->
+                <entry key="hibernate.archive.autodetection" value="class"/>
+                <!-- 不检查@NamedQuery -->
+                <entry key="hibernate.query.startup_check" value="false"/>
+
+                <entry key="hibernate.query.substitutions" value="${hibernate.query.substitutions}"/>
+                <entry key="hibernate.default_batch_fetch_size" value="${hibernate.default_batch_fetch_size}"/>
+                <entry key="hibernate.max_fetch_depth" value="${hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.generate_statistics" value="${hibernate.generate_statistics}"/>
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="${hibernate.bytecode.use_reflection_optimizer}"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache}"/>
+                <entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}"/>
+                <entry key="hibernate.cache.region.factory_class" value="${hibernate.cache.region.factory_class}"/>
+                <entry key="net.sf.ehcache.configurationResourceName" value="${net.sf.ehcache.configurationResourceName}"/>
+                <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
+
+            </map>
+        </property>
+		<property name="packagesToScan">
+			<list>
+				<value>me.supercube.**.model</value>
+			</list>
+		</property>
+	</bean>
+
+	   <!-- 以下 validator  ConversionService 在使用 mvc:annotation-driven 会 自动注册-->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        <!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+
+
+
+
+
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:messages/ValidationMessages.properties</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="false"/>
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60"/>
+	</bean>
+
+
+
+	<bean
+			class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+	<!-- 建立视图内拦截器来解决JPA中访问延迟加载属性时产生的无会话异常 -->
+	<!-- LazyInitializationException: could not initialize proxy no session -->
+	<!-- 此拦截器会注入到servlet配置中的DefaultAnnotationHandlerMapping中 -->
+	<bean name="openEntityManagerInViewInterceptor"
+		  class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactory"/>
+		</property>
+	</bean>
+
+
+	<!-- Transaction manager for a single JPA EntityManagerFactory (alternative
+        to JTA) -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+		  p:entityManagerFactory-ref="entityManagerFactory"/>
+
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+	<!-- spring data jpa repository base-package:扫描的包 repository-impl-postfix:仓库自定义实现类型的后缀
+        自动扫描并添加到接口的实现 factory-class 仓库接口的实现工厂 -->
+	<!--<jpa:repositories base-package="me.supercube.office.**.repository"-->
+	<!--repository-impl-postfix="Impl"-->
+	<!--factory-class="me.supercube.common.repository.support.SimpleBaseRepositoryFactoryBean"-->
+	<!--entity-manager-factory-ref="entityManagerFactory"-->
+	<!--transaction-manager-ref="transactionManager">-->
+	<!--</jpa:repositories>-->
+
+
+	<!-- 配置 Spring Data JPA， base-package 如果多个，用“,”分隔 -->
+	<jpa:repositories base-package="me.supercube.*.**.repository" transaction-manager-ref="transactionManager"
+					  entity-manager-factory-ref="entityManagerFactory"/>
+
+	<!--&lt;!&ndash; 配置 JPA Transaction &ndash;&gt;-->
+	<!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">-->
+	<!--<property name="entityManagerFactory" ref="entityManagerFactory"/>-->
+	<!--</bean>-->
+
+	<!--&lt;!&ndash; 配置 Annotation 驱动，定义事务 &ndash;&gt;-->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="update*" propagation="REQUIRES_NEW"/>
+			<tx:method name="delete*" propagation="REQUIRES_NEW"/>
+			<!-- hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到 -->
+			<tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="count*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config expose-proxy="true" proxy-target-class="true">
+		<!-- 只对业务逻辑层实施事务 -->
+		<aop:pointcut id="txPointcut"
+					  expression="execution(* me.supercube..service..*+.*(..))"/>
+		<aop:advisor id="txAdvisor" advice-ref="txAdvice"
+					 pointcut-ref="txPointcut"/>
+	</aop:config>
+
+	<import resource="spring-config-monitor.xml"/>
+
+</beans>

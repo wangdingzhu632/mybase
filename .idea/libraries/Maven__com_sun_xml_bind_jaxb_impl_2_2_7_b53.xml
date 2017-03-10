@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.sun.xml.bind:jaxb-impl:2.2.7-b53">
+    <CLASSES>
+      <root url="jar://F:/maven/repo/com/sun/xml/bind/jaxb-impl/2.2.7-b53/jaxb-impl-2.2.7-b53.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://F:/maven/repo/com/sun/xml/bind/jaxb-impl/2.2.7-b53/jaxb-impl-2.2.7-b53-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://F:/maven/repo/com/sun/xml/bind/jaxb-impl/2.2.7-b53/jaxb-impl-2.2.7-b53-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

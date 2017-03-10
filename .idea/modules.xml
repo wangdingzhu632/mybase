@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Operation-Core/operation-core.iml" filepath="$PROJECT_DIR$/Operation-Core/operation-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Operation-Web/operation-web.iml" filepath="$PROJECT_DIR$/Operation-Web/operation-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-operation.iml" filepath="$PROJECT_DIR$/smart-operation.iml" />
+    </modules>
+  </component>
+</project>

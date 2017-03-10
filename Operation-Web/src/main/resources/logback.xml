@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <!-- To enable JMX Management -->
+    <jmxConfigurator/>
+
+    <property name="USER_HOME" value="${ecloud.root}"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--格式化输出,%d:日期;%thread:线程名;%-5level：级别,从左显示5个字符宽度;%msg:日志消息;%n:换行符-->
+        <encoder>
+            <pattern>%d{MM-dd HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger
+            name="org.springframework.data.redis.listener.RedisMessageListenerContainer"
+            level="info" additivity="false"/>
+
+    <logger name="me.supercube.**.repository" level="debug" />
+    <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="debug"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="debug"/>
+    <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="org.hibernate.engine.QueryParameters" level="debug"/>
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="debug"/>
+    <logger name="org.springframework.web" level="info"/>
+    <logger name="org.springframework.transaction" level="info" />
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level> <!-- 指定要对级别为ERROR日志信息过滤 -->
+            <OnMismatch>DENY</OnMismatch>     <!-- 如果不匹配，则拒绝处理 -->
+            <OnMatch>ACCEPT</OnMatch>         <!-- 如果匹配，则立即处理 -->
+        </filter>
+        <file>${USER_HOME}/logs/log.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <fileNamePattern>${USER_HOME}/logs/log_%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文件保留天数-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出,%d:日期;%thread:线程名;%-5level：级别,从左显示5个字符宽度;%msg:日志消息;%n:换行符-->
+            <pattern>%d{MM-dd HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 输出ERROR级别的日志到文件(同样采用文件大小策略进行文件输出，超过指定大小对文件压缩(.zip)备份) -->
+    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level> <!-- 指定要对级别为ERROR日志信息过滤 -->
+            <OnMismatch>DENY</OnMismatch>     <!-- 如果不匹配，则拒绝处理 -->
+            <OnMatch>ACCEPT</OnMatch>         <!-- 如果匹配，则立即处理 -->
+        </filter>
+        <file>${USER_HOME}/logs/error.log</file> <!-- 文件名即路径 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${USER_HOME}/logs/error_%d{yyyyMMdd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <root level="info">
+        <appender-ref ref="console"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE-ERROR"/>
+    </root>
+
+</configuration>

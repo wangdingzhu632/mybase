@@ -1,0 +1,190 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="false">
+    <diskStore path="java.io.tmpdir"/>
+
+		<!-- EHCACHE的缓存配置属性 -->
+		<!--
+		diskExpiryThreadIntervalSeconds:磁盘过期线程运行的频率（以秒为单位），也就是磁盘辞旧的缓存清理过期项目的频率
+		（默认120秒）
+
+		diskPersistent：磁盘缓存在VM重新启动时是否保持
+
+		eternal：元素是否永恒，如果是永恒的，就永远不会过期（必须设置）
+
+		maxElementsInMemory:内存能够被缓存的最大元素数量（必须设置）
+
+		memoryStoreEvictionPolicy:当达到maxElementsInMemory时，如何强制进行驱逐，默认使用"最近使用（LRU）"
+		策略，还可以使用"先入先出(FIFO)"和"较少使用(LFU)"策略。（默认是LRU）
+
+		name：缓存名称，对<cache>必须设置
+
+		overflowToDisk:当内存缓存达到maxElementsInMemory时，是否可以溢出到磁盘。(必须设置)
+
+		timeToIdleSeconds:导致元素过期的访问间隔(以秒为单位)。设置为0表示元素可以永远空闲(默认值是0)
+
+		timeToLiveSeconds:元素在缓存里可以存在的时间(以秒为单位)。设置为0表示元素可以在缓存里永远存在而不过期(默认值为0)
+		-->
+
+    <!-- objects are evicted from the cache every 60 seconds -->
+    <cache name="servers"
+           timeToLiveSeconds="60"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           maxElementsOnDisk="10000000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="1"
+           memoryStoreEvictionPolicy="LRU"/>
+
+
+    <!-- 组织机构数据-->
+    <cache name="organizationCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+
+
+    <cache name="userCache"
+          timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           maxElementsOnDisk="10000000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="1"
+           memoryStoreEvictionPolicy="LRU"/>
+       <!-- 缓存用户权限 -->
+      <cache name="appauths"
+           timeToLiveSeconds="60"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           maxElementsOnDisk="10000000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="1"
+           memoryStoreEvictionPolicy="LRU"/>
+          <!-- 缓存用户权限 -->
+   	<cache name="permissionCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+
+    <!-- 缓存域数据-->
+    <cache name="sysdomains"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+    <cache name="docTypeCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+
+    <!-- resources/structures/系统编码中的文件名称缓存 -->
+    <cache name="filesCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+	 <!-- 主题缓存 -->
+	 <cache name="themesCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+      <!-- 模板缓存 -->
+	 <cache name="templatesCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+	<!-- 用户组信息缓存 -->
+	<cache name="sigOptionCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+	<!-- 用户组信息缓存 -->
+	<cache name="userGroupCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="false"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+    <!-- 登录记录缓存 锁定10分钟 -->
+    <cache name="passwordRetryCache"
+           maxEntriesLocalHeap="2000"
+           eternal="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+
+    <cache name="authorizationCache"
+           maxEntriesLocalHeap="2000"
+           eternal="false"
+           timeToIdleSeconds="172800"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+
+    <cache name="authenticationCache"
+           maxEntriesLocalHeap="2000"
+           eternal="false"
+           timeToIdleSeconds="172800"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+
+    <cache name="shiro-activeSessionCache"
+           maxEntriesLocalHeap="10000"
+           eternal="false"
+           timeToIdleSeconds="172800"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+
+
+</ehcache>

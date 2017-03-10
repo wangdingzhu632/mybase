@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Application context definition for PetClinic on JPA.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!-- 	<aop:config proxy-target-class="true"></aop:config>
+ -->
+    <!--
+        Exporter that exposes the CallMonitoringAspect via JMX,
+        based on the @ManagedResource, @ManagedAttribute, and @ManagedOperation annotations.
+    -->
+    <context:mbean-export/>
+
+    
+   	<!-- 缓存配置 -->
+	<!-- 启用缓存注解功能(请将其配置在Spring主配置文件中) -->
+	<cache:annotation-driven cache-manager="springCacheManager" />
+
+	<!-- 若只想使用Spring自身提供的缓存器,则注释掉下面的两个关于Ehcache配置的bean,并启用上面的SimpleCacheManager即可 -->
+	<!-- Spring提供的基于的Ehcache实现的缓存管理器 -->
+	<bean id="cacheManagerFactory"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache/ehcache.xml" />
+	</bean>
+	<bean id="springCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="cacheManagerFactory" />
+	</bean>
+	
+
+	<!-- 如果项目前中已经使用了org.quartz.Scheduler，注意与Spring scheduling 之间的冲突 -->
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ConcurrentTaskExecutor" />
+	
+	<task:annotation-driven executor="taskExecutor"
+		scheduler="taskScheduler" />
+	<task:executor id="taskExecutor" pool-size="20" queue-capacity="100" />
+	
+	<bean id="taskScheduler" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+     <property name="poolSize" value="20" />
+     <property name="waitForTasksToCompleteOnShutdown" value="true" />
+     <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
+        </property>
+    </bean>
+	
+
+</beans>

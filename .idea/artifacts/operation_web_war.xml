@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="operation-web:war">
+    <output-path>$PROJECT_DIR$/Operation-Web/target</output-path>
+    <root id="archive" name="agric.war">
+      <element id="artifact" artifact-name="operation-web:war exploded" />
+    </root>
+  </artifact>
+</component>

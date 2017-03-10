@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Application context definition for PetClinic on JPA. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+	<!--<websocket:message-broker-->
+		<!--application-destination-prefix="/app">-->
+		<!--<websocket:stomp-endpoint path="/ws">-->
+			<!--<websocket:sockjs />-->
+		<!--</websocket:stomp-endpoint>-->
+		<!--<websocket:simple-broker prefix="/topic/,/queue/" />-->
+		 <!--<websocket:broker-channel>-->
+            <!--<websocket:executor  core-pool-size="4" max-pool-size="10" />-->
+        <!--</websocket:broker-channel>-->
+       <!--&lt;!&ndash;   <websocket:stomp-broker-relay prefix="/topic,/queue"-->
+           <!--relay-host="localhost" relay-port="61613"-->
+           <!--heartbeat-send-interval="20000" heartbeat-receive-interval="20000"/> &ndash;&gt;-->
+	<!--</websocket:message-broker>-->
+
+
+</beans>
