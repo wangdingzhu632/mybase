@@ -89,14 +89,14 @@ public class SysuserServiceImpl implements SysuserService {
         return sysuserRepository.findOne(id);
     }
 
-    @Override
-    public boolean userIdExists(String userid) {
-        if (StringUtils.hasLength(userid)) {
-            long count = sysuserRepository.countByUseridAndSiteid(userid, "");
-            return count > 0;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean userIdExists(String userid) {
+//        if (StringUtils.hasLength(userid)) {
+//            long count = sysuserRepository.countByUseridAndSiteid(userid, "");
+//            return count > 0;
+//        }
+//        return false;
+//    }
 
     @Override
     public Sysuser findByUserid(String userid) throws Exception {
@@ -118,7 +118,7 @@ public class SysuserServiceImpl implements SysuserService {
     public Sysuser create(Sysuser entity) throws Exception {
 
         Sysuser existUser = findByUserid(entity.getUserid());
-        if (existUser != null && existUser.getSysuserid() > 0) {
+        if (existUser != null) {
             throw new Exception(String.format("用户ID[%s]已经存在", existUser.getUserid()));
         }
         if(!StringUtils.hasLength(entity.getPassword())) {
@@ -139,7 +139,7 @@ public class SysuserServiceImpl implements SysuserService {
     @Override
     public Sysuser save(Sysuser entity) throws Exception {
         Sysuser existUser = findByUserid(entity.getUserid());
-        if (existUser != null && existUser.getSysuserid() > 0) {
+        if (existUser != null ) {
 //            if (!StringUtils.hasLength(entity.getPassword())) {
 //                entity.setPassword(existUser.getPassword());
 //                entity.setSalt(existUser.getSalt());
@@ -186,15 +186,18 @@ public class SysuserServiceImpl implements SysuserService {
 
     @Override
     public Message4Collection deleteByList(List<Sysuser> sysuserList) {
-        if (sysuserList != null) {
-            for (int i = 0; i < sysuserList.size(); i++) {
-                if (sysuserList.get(i).getUserid() != null && sysuserList.get(i).getUserid().toLowerCase().equals("admin")) {
-                    sysuserList.remove(i);
-                }
-                if (sysuserRepository.exists(sysuserList.get(i).getSysuserid())) {
-                    sysuserRepository.delete(sysuserList.get(i));
-                }
-            }
+
+        return null;
+    }
+
+    @Override
+    public Sysuser findBySysuserid(String sysuserid) throws Exception {
+        if(!StringUtils.hasLength(sysuserid)){
+            return null;
+        }
+        List<Sysuser> sysuserList = sysuserRepository.findBySysuserid(sysuserid);
+        if(!sysuserList.isEmpty()){
+            return sysuserList.get(0);
         }
         return null;
     }
@@ -234,13 +237,4 @@ public class SysuserServiceImpl implements SysuserService {
         return null;
     }
 
-    @Override
-    public Sysuser findByUserId(String userId) throws Exception {
-        List<Sysuser> sysuserList = sysuserRepository.findByUserid(userId);
-        if(!sysuserList.isEmpty()){
-            Sysuser sysuser = sysuserList.get(0);
-            return sysuser;
-        }
-        return null;
-    }
 }

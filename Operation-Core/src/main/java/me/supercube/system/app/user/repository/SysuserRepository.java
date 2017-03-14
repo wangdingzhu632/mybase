@@ -18,5 +18,6 @@ public interface SysuserRepository extends JpaRepository<Sysuser, Long>, JpaSpec
 
     List<Sysuser> findByType(String type) throws DataAccessException;
 
-    Long countByUseridAndSiteid(String userid,String siteid) throws DataAccessException;
+    List<Sysuser> findBySysuserid(String sysuserid) throws DataAccessException;
+
 }

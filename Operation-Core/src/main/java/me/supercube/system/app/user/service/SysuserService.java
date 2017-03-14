@@ -43,7 +43,7 @@ public interface SysuserService {
     Sysuser findByUserid(String userid) throws Exception;
 
 
-    boolean userIdExists(String userid);
+//    boolean userIdExists(String userid);
 
 
     /**
@@ -87,8 +87,13 @@ public interface SysuserService {
      */
     List<Sysuser> findByType(String type) throws Exception;
 
-    Sysuser findByUserId(String userId) throws Exception;
-
+    /**
+     * 根据sysuserid查询用户
+     * @param sysuserid
+     * @return
+     * @throws Exception
+     */
+    Sysuser findBySysuserid(String sysuserid) throws Exception;
 
     /**
      * 重置密码为123456

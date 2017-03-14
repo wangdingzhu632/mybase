@@ -211,7 +211,8 @@ public class SysUserController {
     public Message checkUserid(@PathVariable String userid) {
         try {
             Message message = new Message();
-            boolean isExist = sysuserService.userIdExists(userid);
+            Sysuser sysuser =  sysuserService.findByUserid(userid);
+            boolean isExist = null==sysuser?false:true;
             message.setSuccess(isExist);
             return message;
         } catch (Exception e) {
