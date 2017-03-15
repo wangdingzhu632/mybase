@@ -1,6 +1,5 @@
 package me.supercube.system;
 
-import me.supercube.common.util.UUIDUtils;
 import me.supercube.system.app.user.model.Sysuser;
 import me.supercube.system.app.user.service.SysuserService;
 import org.apache.commons.logging.Log;
@@ -35,13 +34,13 @@ public class SysUserServiceTest {
     @Test
     public void saveTest() throws Exception {
         Sysuser sysuser = new Sysuser();
-        sysuser.setUserid("admin");
-        sysuser.setPassword("admin");
-        sysuser.setTruename("系统管理员");
+        sysuser.setUserid("ios");
+        sysuser.setLoginid("ios");
+        sysuser.setPassword("ios");
+        sysuser.setTruename("苹果");
         sysuser.setType("SYSTEM");
         sysuser.setStatus("1");
         sysuser.setFailedlogins(0);
-        sysuser.setLoginid("test");
         sysuser.setSalt("1");
         sysuser.setSysuser(true);
         sysuserService.save(sysuser);
@@ -82,7 +81,9 @@ public class SysUserServiceTest {
     @Test
     public void changePassword() throws Exception {
         Sysuser sysuser = new Sysuser();
-
+        sysuser.setLoginid("test");
+        sysuser.setUserid("test");
+        sysuser.setPassword("111111");
         sysuserService.changePassword(sysuser);
 
     }

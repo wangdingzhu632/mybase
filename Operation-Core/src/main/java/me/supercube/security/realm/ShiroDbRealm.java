@@ -153,7 +153,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
             );
 
             //登录成功之后获取当前用户对应的权限
-            this.findSysMenuByUserType(currUser);
+            //暂时没这个需求
+            //this.findSysMenuByUserType(currUser);
 
             return authenticationInfo;
         } catch (Exception e) {
@@ -205,12 +206,6 @@ public class ShiroDbRealm extends AuthorizingRealm {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // Map<String,List<SysMenu>>sysmenus=sysMenuService.findMenusByUserid(currUser.getUserid());//菜单集合
-        // servletContext.setAttribute("sysmenus", sysmenus);
-
-        // SysInfo sysinfo = sysPropService.findSysInfo();//系统信息
-        // servletContext.setAttribute("sysinfo", sysinfo);
     }
 
 }
