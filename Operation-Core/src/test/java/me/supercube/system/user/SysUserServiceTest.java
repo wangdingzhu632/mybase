@@ -1,4 +1,4 @@
-package me.supercube.system;
+package me.supercube.system.user;
 
 import me.supercube.system.app.user.model.Sysuser;
 import me.supercube.system.app.user.service.SysuserService;

@@ -39,20 +39,13 @@ import java.util.*;
 
 /**
  * 系统用户管理
- * <p>
- * /users  GET
- * /users  POST
- * /users/:username  DELETE
  *
- * @author CHENPING
  */
 @RestController
 @RequestMapping("/api/sysuser")
-//@CrossOrigin(origins="*", maxAge=3600)
 public class SysUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(SysUserController.class);
-
 
     @Autowired
     private SysuserService sysuserService;
@@ -64,37 +57,25 @@ public class SysUserController {
     @ApiOperation(value="获取系统用户列表", notes="")
     @RequestMapping(method = RequestMethod.GET)
     public Message4Page<Sysuser> getUsers(
-            @RequestParam(value = "siteid", required = false,defaultValue="") String siteid,
             @RequestParam(value = "type", required = false,defaultValue="") String type,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "rows", required = false, defaultValue = "15") Integer rows,
             HttpServletRequest request) {
-
-
         String basePath = "http://"+ request.getServerName()+":"+request.getServerPort()+request.getContextPath();
         Pageable pageable = new PageRequest(page - 1, rows);
         Map<String, String> condition = new HashMap<String, String>();
-
-        if (StringUtils.hasLength(siteid)) {
-            condition.put("siteid",siteid);
-        }
-
         if (StringUtils.hasLength(type)) {
             condition.put("type",type);
         }
-
         if (request.getParameter("userid") != null) {
             condition.put("userid", request.getParameter("userid"));
         }
-
         if (request.getParameter("status") != null) {
             condition.put("status", request.getParameter("status"));
         }
-
         if (request.getParameter("keyword") != null) {
             condition.put("keyword", request.getParameter("keyword"));
         }
-
         Message4Page<Sysuser> result = null;
         Page<Sysuser> pageing = null;
         try {
@@ -106,6 +87,8 @@ public class SysUserController {
             }
             result = new Message4Page<Sysuser>(Message.success(), pageing);
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("获取用户列表失败：",e);
             result = new Message4Page<Sysuser>(Message.fail(e.toString()), pageing);
         }
         return result;
@@ -153,6 +136,7 @@ public class SysUserController {
                 message = new Message4Entity<Sysuser>(Message.success(), entity);
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.error("保存用户失败："+e);
                 message = new Message4Entity<Sysuser>(Message.fail(e.toString()), entity);
             }
         }
@@ -203,7 +187,6 @@ public class SysUserController {
 
     /**
      * 检查用户ID是否已经存在
-     *
      * @param userid 用户ID
      * @return true or false
      */
@@ -221,6 +204,9 @@ public class SysUserController {
         }
     }
 
+    /**
+     * 更改用户登陆密码
+     */
     @RequestMapping(value = "/manage/changepwd", method = RequestMethod.POST)
     public Message handleAdminChangePassword(@RequestBody Sysuser user) {
         if (!StringUtils.hasLength(user.getPassword())) {
@@ -324,31 +310,6 @@ public class SysUserController {
         }
     }
 
-    /**
-     * 查找专家列表
-     * @return
-     */
-    @RequestMapping(value = "/specialist", method = RequestMethod.GET)
-    public Message4Collection getSpecialist(HttpServletRequest request){
-        List<Sysuser> speciaList = new ArrayList<Sysuser>();
-        String basePath = "http://"+ request.getServerName()+":"+request.getServerPort()+request.getContextPath();
-        try {
-            // SYSTEM=系统管理员类型  SPECIALIST=专家   FARMER=农户
-            String type = "SPECIALIST";
-            speciaList = sysuserService.findByType(type);
-            for(Sysuser sysuser : speciaList){
-                sysuser.setImgUrl(basePath + sysuser.getImgUrl());
-            }
-            if(speciaList.isEmpty()){
-                return new Message4Collection(Message.fail("专家列表为空"),null);
-            }else{
-                return new Message4Collection(Message.success(),speciaList);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Message4Collection(Message.fail("查询专家列表异常"),null);
-        }
-    }
 
     /**
      * 上传用户头像
@@ -409,10 +370,6 @@ public class SysUserController {
         if (!saveDirFile.exists()) {
             saveDirFile.mkdirs();
         }
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//        String ymd = sdf.format(new Date());
-//        savePath += ymd + "/";
-//        saveUrl += ymd + "/";
         File dirFile = new File(savePath);
         if (!dirFile.exists()) {
             dirFile.mkdirs();
@@ -446,7 +403,6 @@ public class SysUserController {
             }
             //上传图片保存路径
             String imageUrl = "/upload/image/"+newFileName;
-            //String iconPath ="http://"+ request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/weathercn/";
             try {
                 //更新用户头像url路径
                 sysuserService.changeUserImage(userid,imageUrl);

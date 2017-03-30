@@ -1,5 +1,4 @@
 package me.supercube.system.app.site.model;
-// Generated 2016-9-13 11:32:38 by Hibernate Tools 4.3.1.Final
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
