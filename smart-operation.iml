@@ -192,5 +192,6 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util-scan:8.0.33" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.2.5" level="project" />
   </component>
 </module>

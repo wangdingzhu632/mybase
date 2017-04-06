@@ -103,6 +103,7 @@
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-catalina:8.0.33" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.2.1" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.2.1" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.2.5" />
           <element id="library" level="project" name="Maven: org.springframework.retry:spring-retry:1.0.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.data:spring-data-commons:1.12.1.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:4.3.2.RELEASE" />
